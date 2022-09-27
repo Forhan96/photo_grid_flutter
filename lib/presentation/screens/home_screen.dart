@@ -8,7 +8,15 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          child: Text("HGGGJG"),
+          child: Column(
+            children: [
+              const Text("HGGGJG"),
+              TextButton(
+                onPressed: () {},
+                child: Text("Fetch"),
+              ),
+            ],
+          ),
         ),
       ),
     );
