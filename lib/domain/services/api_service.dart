@@ -1,5 +1,5 @@
-import 'package:photo_grid_flutter/domain/models/api_response.dart';
+import 'package:http/http.dart' as http;
 
 abstract class ApiService {
-  Future<ApiResponse> fetchImages();
+  Future<http.Response> fetchImages();
 }
