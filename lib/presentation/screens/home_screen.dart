@@ -1,6 +1,7 @@
+import 'package:animations/animations.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_grid_flutter/domain/providers/photo_provider.dart';
-import 'package:photo_grid_flutter/presentation/common/router/routes.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -33,15 +34,39 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               itemCount: photoProvider.photos.length,
               itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, Routes.getDetailsScreenRoute(index.toString()));
-                  },
-                  child: Hero(
-                    tag: "imageHero",
-                    child: Image.network(photoProvider.photos[index].thumbnailUrl ?? ""),
-                  ),
-                );
+                return OpenContainer(closedBuilder: (_, openContainer) {
+                  return CachedNetworkImage(
+                    imageUrl: "${photoProvider.photos[index].thumbnailUrl}.png",
+                  );
+                }, openBuilder: (_, closeContainer) {
+                  return Column(
+                    children: [
+                      CachedNetworkImage(
+                        imageUrl: "${photoProvider.photos[index].url}.png",
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Text(
+                          photoProvider.photos[index].title ?? "",
+                          style: Theme.of(context).textTheme.headline5,
+                        ),
+                      ),
+                    ],
+                  );
+                });
+                // return GestureDetector(
+                //   onTap: () {
+                //     Navigator.pushNamed(context, Routes.getDetailsScreenRoute(index.toString()));
+                //   },
+                //   child: Hero(
+                //     tag: "imageHero",
+                //     child: CachedNetworkImage(
+                //       imageUrl: "${photoProvider.photos[index].thumbnailUrl}.png",
+                //       height: 100,
+                //       width: 100,
+                //     ),
+                //   ),
+                // );
               },
             ),
           );
