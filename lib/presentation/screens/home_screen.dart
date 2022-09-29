@@ -16,6 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      // Loading list of Photos
       Provider.of<PhotoProvider>(context, listen: false).fetchPhotos();
     });
   }
@@ -34,39 +35,45 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               itemCount: photoProvider.photos.length,
               itemBuilder: (context, index) {
-                return OpenContainer(closedBuilder: (_, openContainer) {
-                  return CachedNetworkImage(
-                    imageUrl: "${photoProvider.photos[index].thumbnailUrl}.png",
-                  );
-                }, openBuilder: (_, closeContainer) {
-                  return Column(
-                    children: [
-                      CachedNetworkImage(
-                        imageUrl: "${photoProvider.photos[index].url}.png",
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Text(
-                          photoProvider.photos[index].title ?? "",
-                          style: Theme.of(context).textTheme.headline5,
+                return OpenContainer(
+                  closedBuilder: (_, openContainer) {
+                    return CachedNetworkImage(
+                      imageUrl: "${photoProvider.photos[index].thumbnailUrl}.png",
+                    );
+                  },
+                  openBuilder: (_, closeContainer) {
+                    return SafeArea(
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            CachedNetworkImage(
+                              imageUrl: "${photoProvider.photos[index].url}.png",
+                              placeholder: (context, url) => Container(
+                                width: double.infinity,
+                                height: MediaQuery.of(context).size.width,
+                                child: const LinearProgressIndicator(
+                                  color: Colors.greenAccent,
+                                  backgroundColor: Colors.white,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text(
+                                photoProvider.photos[index].title ?? "",
+                                style: Theme.of(context).textTheme.headline5,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  );
-                });
-                // return GestureDetector(
-                //   onTap: () {
-                //     Navigator.pushNamed(context, Routes.getDetailsScreenRoute(index.toString()));
-                //   },
-                //   child: Hero(
-                //     tag: "imageHero",
-                //     child: CachedNetworkImage(
-                //       imageUrl: "${photoProvider.photos[index].thumbnailUrl}.png",
-                //       height: 100,
-                //       width: 100,
-                //     ),
-                //   ),
-                // );
+                    );
+                  },
+                );
               },
             ),
           );

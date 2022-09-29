@@ -1,21 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:photo_grid_flutter/presentation/common/router/router_helper.dart';
 import 'package:photo_grid_flutter/presentation/screens/home_screen.dart';
 
-class PhotoGridApp extends StatefulWidget {
+class PhotoGridApp extends StatelessWidget {
   const PhotoGridApp({Key? key}) : super(key: key);
-
-  @override
-  State<PhotoGridApp> createState() => _PhotoGridAppState();
-}
-
-class _PhotoGridAppState extends State<PhotoGridApp> {
-  @override
-  void initState() {
-    super.initState();
-    RouterHelper().setupRouter();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +16,6 @@ class _PhotoGridAppState extends State<PhotoGridApp> {
           primarySwatch: Colors.blue,
         ),
         home: const HomeScreen(),
-        onGenerateRoute: RouterHelper.router.generator,
-        // initialRoute: Routes.SPLASH_SCREEN,
       ),
     );
   }
