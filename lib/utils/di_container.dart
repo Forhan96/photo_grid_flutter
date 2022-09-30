@@ -15,5 +15,5 @@ Future<void> init() async {
   sl.registerLazySingleton<ApiService>(() => ApiServiceImpl());
 
   //providers
-  sl.registerFactory(() => PhotoProvider(sharedPreferences: sl()));
+  sl.registerFactory(() => PhotoProvider(sharedPreferences: sl(), apiService: sl()));
 }

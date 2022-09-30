@@ -1,17 +1,16 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
-import 'package:photo_grid_flutter/debugger.dart';
-import 'package:photo_grid_flutter/di_container.dart';
 import 'package:photo_grid_flutter/domain/models/photo.dart';
 import 'package:photo_grid_flutter/domain/services/api_service.dart';
+import 'package:photo_grid_flutter/utils/debugger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PhotoProvider extends ChangeNotifier {
   final SharedPreferences sharedPreferences;
-  PhotoProvider({required this.sharedPreferences});
+  final ApiService apiService;
 
-  final ApiService _apiService = sl<ApiService>();
+  PhotoProvider({required this.apiService, required this.sharedPreferences});
 
   final List<Photo> _photos = [];
 
@@ -29,6 +28,8 @@ class PhotoProvider extends ChangeNotifier {
       lastFetchedData = DateTime.parse(lastFetched);
       difference = DateTime.now().difference(lastFetchedData).inDays;
     }
+
+    //If last fetched is equal of more than one day, fetch photos from API
     if (difference >= 1) {
       fetchPhotosFromApi();
       return;
@@ -43,12 +44,12 @@ class PhotoProvider extends ChangeNotifier {
   ///Fetch photos from API
   Future<void> fetchPhotosFromApi() async {
     try {
-      var response = await _apiService.fetchImages();
+      var response = await apiService.fetchImages();
       if (response.statusCode == 200) {
         List photoResponse = jsonDecode(response.body);
         sharedPreferences.setString("response", response.body);
         sharedPreferences.setString("lastFetched", DateTime.now().toString());
-
+        _photos.clear();
         for (var element in photoResponse) {
           _photos.add(Photo.fromJson(element));
           notifyListeners();
